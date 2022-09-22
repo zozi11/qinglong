@@ -1,8 +1,6 @@
 const $ = new Env('慢慢游-签到');
  const notify = $.isNode() ? require('./sendNotify') : '';
 
-//目标贴地址：https://bbs.125.la/thread-14746303-1-1.html
-//执行完毕后可以看目标贴是否有自己的回帖
 
 console.log("====================== \r\n 麦哲伦测试脚本1 ，仅为学习青龙脚本编写 \r\n");
 
