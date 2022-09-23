@@ -1,4 +1,4 @@
-const $ = new Env('慢慢游-签到2.0');
+const $ = new Env('慢慢游-签到');
  const notify = $.isNode() ? require('./sendNotify') : '';
 
 console.log("====================== \r\n 慢慢游论坛签到2.0，基于环境变量，支持多账号 \r\n");
