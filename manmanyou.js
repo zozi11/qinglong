@@ -1,26 +1,101 @@
-const $ = new Env('慢慢游-签到');
+const $ = new Env('慢慢游-签到 2.0');
  const notify = $.isNode() ? require('./sendNotify') : '';
 
+console.log("====================== \r\n 慢慢游论坛签到2.0，基于环境变量，支持多账号 \r\n");
+if (!process.env.MMY_COOKIE) {
+console.log("请先在环境变量中配置好cookie，名称为 MMY_COOKIE，一行一个，跟京东一样");
+console.log("还要环境变量中配置好formhash，名称为 MMY_FORMHASH，一行一个，顺序与账号cookie顺序一致");
 
-console.log("====================== \r\n 麦哲伦测试脚本1 ，仅为学习青龙脚本编写 \r\n");
+}
 
-//修改以下三个参数为你自己的信息，其中todaysay可以为空，为空的话，数据中的 qdmode 要改为3
-var cookie="";
-var formhash='5b8b8909';
+
+//先在环境变量中配置好cookie，名称为 MMY_COOKIE，一行一个
+//还要环境变量中配置好formhash，名称为 MMY_FORMHASH，一行一个，顺序与账号cookie顺序一致
+
+//修改以下2个参数为你自己的信息，其中todaysay可以为空，为空的话， qdmode 要改为3
+
 var todaysay='心情很放松!';
-//--- 只需修改以上3个内容
+var qdmode=1;  //如果你要todaysay是空，这里改为3；否则就保持1 不变
+
+//--- 只需修改以上2个内容
+
 
 
 var message='';
+let CookieMMYs = []
+// 判断环境变量里面是否有慢慢游ck
+if (process.env.MMY_COOKIE) {
+  if (process.env.MMY_COOKIE.indexOf('&') > -1) {
+    CookieMMYs = process.env.MMY_COOKIE.split('&');
+  } else if (process.env.MMY_COOKIE.indexOf('\n') > -1) {
+    CookieMMYs = process.env.MMY_COOKIE.split('\n');
+  } else {
+    CookieMMYs = [process.env.MMY_COOKIE];
+  }
+}
 
 
-qiandao()
- 
+let CookieMMY_formhashs = []
+// 判断环境变量里面是否有慢慢游ck
+if (process.env.MMY_FORMHASH) {
+  if (process.env.MMY_FORMHASH.indexOf('&') > -1) {
+    CookieMMY_formhashs = process.env.MMY_FORMHASH.split('&');
+  } else if (process.env.MMY_FORMHASH.indexOf('\n') > -1) {
+    CookieMMY_formhashs = process.env.MMY_FORMHASH.split('\n');
+  } else {
+    CookieMMY_formhashs = [process.env.MMY_FORMHASH];
+  }
+}
 
 
-function qiandao() {
+CookieMMYs = [...new Set(CookieMMYs.filter(item => !!item))]
+console.log(`\n====================共${CookieMMYs.length}个慢慢游账号Cookie=========\n`);
+
+var i=0;
+
+do_xiancheng();
+
+function do_xiancheng(){
+    if (i<CookieMMYs.length){
+        console.log(`\n======开始执行第 ${i+1} 个账号签到 =========\n`);
+        if (!CookieMMYs[i].match(/_auth=(.+?);/) || !CookieMMYs[i].match(/seccode=(.+?);/)) console.log(`\n提示:慢慢游cookie 【${CookieMMYs[i]}】填写不规范,可能会影响部分脚本正常使用。请检查环境变量，重新填写`);
+        const index = (i + 1 === 1) ? '' : (i + 1);
+        cookie = CookieMMYs[i].trim();
+        formhash=CookieMMY_formhashs[i].trim();
+            qiandao(cookie,formhash,i+1);
+            i++;
+                setTimeout(function(){
+                do_xiancheng()
+                },2000) //每个账号签到之间间隔3秒
+            
+    }else{
+        console.log("全部账号处理完成");
+        //开始推送
+        do_tuisong()
+    }
+
+}
+
+function do_tuisong(){
+!(async () => {
+
+    if (message) {
+        await notify.sendNotify($.name, message)
+    } 
+})()
+.catch((e) => {
+    })
+    .finally(() => {
+        $.msg($.name, '', `结束`);
+        $.done();
+    })
+}
+
+
+function qiandao(cookie,formhash,a) {
+    var tmpmessage;
     return new Promise(resolve => {
-        $.post(taskPostUrl('https://www.mmybt.com/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&sign_as=1&inajax=1','formhash='+formhash+'&qdxq=kx&qdmode=1&todaysay='+todaysay+'&fastreply=0'), async (err, resp, data) => {
+        $.post(taskPostUrl('https://www.mmybt.com/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&sign_as=1&inajax=1','formhash='+formhash+'&qdxq=kx&qdmode='+qdmode+'&todaysay='+todaysay+'&fastreply=0',cookie), async (err, resp, data) => {
             try {
                 if (err) {
                     console.log( `出现错误！错误内容：`)
@@ -30,14 +105,20 @@ function qiandao() {
                      //取出签到结果
                         var reg = /<div class="c">([\s\S]*?)<\/div>/ig; 
 
-                        data.replace(reg, function() { console.log(arguments[1]);message=arguments[1]; });
-                        
+                        tmpdata=data;
 
-                    console.log( `正在发送通知，请稍候……`)
-                    await notify.sendNotify(`${$.name}`, message)
-                    message = "";
-                    console.log( `通知推送完成`)
-                    //msg.push(message)
+                        tmpdata.replace(reg, function() { console.log('第' + a + '个账号签到结果：'+ arguments[1] + "\r\n等待2秒后签到下一个账号");tmpmessage=arguments[1]; });
+                        
+                        if(tmpmessage){
+                            message+='第' + a + '个账号签到结果：'+tmpmessage+"\r\n";
+                        }else{
+                            message+='第 '+a+' 个账号签到失败，错误内容见执行日志'+"\r\n";
+                        }
+
+
+                    //如果需要推送通知，删除下方的注释，使该句生效。暂时只支持每个账号推送一次，不是集合统计推送
+                    //await notify.sendNotify(`${$.name}`, message);
+
                 }
             } catch (e) {
                 $.logErr(e, resp)
@@ -49,7 +130,7 @@ function qiandao() {
 }
 
 
-function taskPostUrl(post_url,post_body) {
+function taskPostUrl(post_url,post_body,cookie) {
     return {
         url: post_url,
         body:post_body,
