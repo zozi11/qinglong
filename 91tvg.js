@@ -1,21 +1,21 @@
-const $ = new Env('91TVGÇ©µ½');
+const $ = new Env('91TVGç­¾åˆ°');
 /**
  * 
- * 
+ *  
 [task_local]
-#91TVGÇ©µ½
-30 8,12 * * * 91tvg.js, tag=91TVGÇ©µ½, enabled=true
+#91TVGç­¾åˆ°
+30 8,12 * * * 91tvg.js, tag=91TVGç­¾åˆ°, enabled=true
 
  */
-//ÔÚ»·¾³±äÁ¿ÖĞĞÂ½¨Á½¸ö±äÁ¿£¬Ãû³Æ·Ö±ğÎª TVG_COOKIE ºÍ TVG_FORMHASH,ÖµÌîĞ´¶ÔÓ¦µÄ×¥°üÄÚÈİ£¬¾Í¿ÉÒÔÊ¹ÓÃÁË
+//åœ¨ç¯å¢ƒå˜é‡ä¸­æ–°å»ºä¸¤ä¸ªå˜é‡ï¼Œåç§°åˆ†åˆ«ä¸º TVG_COOKIE å’Œ TVG_FORMHASH,å€¼å¡«å†™å¯¹åº”çš„æŠ“åŒ…å†…å®¹ï¼Œå°±å¯ä»¥ä½¿ç”¨äº†
 
-//ÊÇ·ñµ÷ÓÃÍÆËÍ£¬1ÎªÍÆËÍ£¬0Îª²»ÍÆËÍ½á¹û
+//æ˜¯å¦è°ƒç”¨æ¨é€ï¼Œ1ä¸ºæ¨é€ï¼Œ0ä¸ºä¸æ¨é€ç»“æœ
 var if_send_msg=1;
 
 
 const cookie = process.env.TVG_COOKIE;
 const formhash = process.env.TVG_FORMHASH;
-var todaysay = '¼ÇÉÏÒ»±Ê£¬hold×¡ÎÒµÄ¿ìÀÖ£¡';
+var todaysay = 'è®°ä¸Šä¸€ç¬”ï¼Œholdä½æˆ‘çš„å¿«ä¹ï¼';
 
 
  
@@ -32,19 +32,19 @@ function qiandao() {
 			try {
                 
 
-                //dc_signin', 'Ç©µ½³É¹¦~Ëæ»ú½±Àø¾­ÑéÖµ16'
+                //dc_signin', 'ç­¾åˆ°æˆåŠŸ~éšæœºå¥–åŠ±ç»éªŒå€¼16'
 
                 
                     //console.log(data);
 
-					//È¡³öÇ©µ½½á¹û
+					//å–å‡ºç­¾åˆ°ç»“æœ
 					var reg = /dc_signin', '([\s\S]*?)'/ig; 
 
 					var tmpstr;
 					data.toString().replace(reg, function() {
 						tmpstr = arguments[1]
 					});
-                    //Èç¹ûÈ¡³öÊ§°Ü£¬ÄÇ¾Í²»ÊÇ³É¹¦¶øÊÇÁíÒ»¸öÌáÊ¾£¬ÓÃÁíÒ»¸ö¹æÔò»ñÈ¡
+                    //å¦‚æœå–å‡ºå¤±è´¥ï¼Œé‚£å°±ä¸æ˜¯æˆåŠŸè€Œæ˜¯å¦ä¸€ä¸ªæç¤ºï¼Œç”¨å¦ä¸€ä¸ªè§„åˆ™è·å–
                     if(!tmpstr){
                         reg = /CDATA\[([\s\S]*?)<script/ig; 
 
@@ -53,13 +53,13 @@ function qiandao() {
                         });
                     }
 
-                    if(!tmpstr){message='¹¦ÄÜÒì³£';}else{messgae=tmpstr;}
+                    if(!tmpstr){message='åŠŸèƒ½å¼‚å¸¸';}else{messgae=tmpstr;}
 
 
 					console.log(tmpstr);
                     if(if_send_msg==1){
 					    await notify.sendNotify(`${$.name}`, message)
-					    console.log(`Í¨ÖªÍÆËÍÍê³É`)
+					    console.log(`é€šçŸ¥æ¨é€å®Œæˆ`)
                     }
 					message = "";
 			} catch (e) {
@@ -147,7 +147,7 @@ function utf8Decode(inputStr) {
   return outputStr;
 
 }
-//envÄ£¿é    ²»Òª¶¯  
+//envæ¨¡å—    ä¸è¦åŠ¨  
 function Env(t, e) {
 	class s {
 		constructor(t) {
