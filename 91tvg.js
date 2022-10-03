@@ -1,4 +1,5 @@
 const $ = new Env('91TVG签到');
+const notify = $.isNode() ? require('./sendNotify') : '';
 /**
  * 
  *  
@@ -53,7 +54,7 @@ function qiandao() {
                         });
                     }
 
-                    if(!tmpstr){message='功能异常';}else{messgae=tmpstr;}
+                    if(!tmpstr){message='功能异常';}else{message=tmpstr;}
 
 
 					console.log(tmpstr);
